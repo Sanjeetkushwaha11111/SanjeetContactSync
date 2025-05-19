@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/userContactsFragment">
+
+    <fragment
+        android:id="@+id/userContactsFragment"
+        android:name="com.example.contactsync_sanjeet.ui.UserContactsFragment"
+        android:label="Contacts" />
+
+    <fragment
+        android:id="@+id/addContactFragmentFromServer"
+        android:name="com.example.contactsync_sanjeet.ui.AddContactFromServerFragment" />
+    <fragment
+        android:id="@+id/addContactFragmentManual"
+        android:name="com.example.contactsync_sanjeet.ui.AddManualContactFragment" />
+</navigation>
