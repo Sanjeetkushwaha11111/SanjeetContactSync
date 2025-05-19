@@ -58,6 +58,10 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.13")
+    implementation ("com.intuit.ssp:ssp-android:1.1.1")
+    implementation ("com.intuit.sdp:sdp-android:1.1.1")
+    implementation ("com.airbnb.android:lottie:6.6.6")
+    implementation ("com.jakewharton.timber:timber:5.0.1")
 
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)

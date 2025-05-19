@@ -1,15 +1,14 @@
 package com.example.contactsync_sanjeet.utils
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
 
 object PermissionHelper {
 
@@ -17,64 +16,40 @@ object PermissionHelper {
         Manifest.permission.READ_CONTACTS,
         Manifest.permission.WRITE_CONTACTS
     )
-    fun Fragment.ensureContactPermissions(
-        permLauncher: ActivityResultLauncher<Array<String>>,
+
+    fun hasContactsPerms(ctx: Context): Boolean = CONTACT_PERMS.all {
+        ActivityCompat.checkSelfPermission(ctx, it) ==
+                android.content.pm.PackageManager.PERMISSION_GRANTED
+    }
+
+    fun ensureContactPermissions(
+        activity: AppCompatActivity,
+        launcher: ActivityResultLauncher<Array<String>>,
         onGranted: () -> Unit
     ) {
         when {
-            hasContactsPerms(requireContext()) -> onGranted()
-            shouldShowRationale() -> showRationaleDialog {
-                permLauncher.launch(CONTACT_PERMS)
+            hasContactsPerms(activity) -> onGranted()
+            shouldShowRationale(activity) -> showRationaleDialog(activity) {
+                launcher.launch(CONTACT_PERMS)
             }
-            else -> {
-                permLauncher.launch(CONTACT_PERMS)
-            }
+            else -> launcher.launch(CONTACT_PERMS)
         }
     }
 
-    fun Fragment.onPermissionsResult(
-        grants: Map<String, Boolean>,
-        onGranted: () -> Unit
-    ) {
-        if (grants.values.all { it }) {
-            onGranted()
-        } else {
-            if (!shouldShowRationale()) {
-                showSettingsDialog()
-            } else {
-                // transient deny (snackbar / dialog optional)
-            }
-        }
+    fun openAppSettings(activity: AppCompatActivity) {
+        val uri = Uri.fromParts("package", activity.packageName, null)
+        activity.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri))
     }
 
+    private fun shouldShowRationale(a: AppCompatActivity) =
+        CONTACT_PERMS.any { ActivityCompat.shouldShowRequestPermissionRationale(a, it) }
 
-    private fun Fragment.shouldShowRationale(): Boolean =
-        CONTACT_PERMS.any { ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), it) }
-
-    private fun hasContactsPerms(ctx: Context): Boolean =
-        CONTACT_PERMS.all { ActivityCompat.checkSelfPermission(ctx, it) == android.content.pm.PackageManager.PERMISSION_GRANTED }
-
-    private fun Fragment.showRationaleDialog(onPositive: () -> Unit) {
-        AlertDialog.Builder(requireContext())
+    private fun showRationaleDialog(a: AppCompatActivity, ok: () -> Unit) {
+        AlertDialog.Builder(a)
             .setTitle("Contacts permission required")
-            .setMessage("The app needs access to your contacts to import and edit training users.")
-            .setPositiveButton("Allow") { _, _ -> onPositive() }
+            .setMessage("Grant Contacts permission to import and edit users.")
+            .setPositiveButton("Allow") { _, _ -> ok() }
             .setNegativeButton("Cancel", null)
             .show()
-    }
-
-    private fun Fragment.showSettingsDialog() {
-        AlertDialog.Builder(requireContext())
-            .setTitle("Permission permanently denied")
-            .setMessage("Enable the Contacts permission in Settings ▶︎ Apps ▶︎ ContactSync ▶︎ Permissions.")
-            .setPositiveButton("Open Settings") { _, _ -> openAppSettings() }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-    private fun Fragment.openAppSettings() {
-        val uri = Uri.fromParts("package", requireContext().packageName, null)
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, uri)
-        startActivity(intent)
     }
 }
