@@ -2,16 +2,12 @@ package com.example.contactsync_sanjeet.data
 
 data class UserContact(
     val id: Long,
-    val firstName: String,
-    val surName: String,
-    val company: String,
-    val phoneNumber: String?,
-    val photoUri: String?,
-    val createdTime: Long,
-    val source: ContactSource
+    val displayName: String,
+    val phoneNumber: String?
 )
 
-enum class ContactSource {
-    SERVER,
-    MANUAL
-}
+data class UiState(
+    val contacts: List<UserContact> = emptyList(),
+    val isSyncing: Boolean = false,
+    val message: String? = null
+)

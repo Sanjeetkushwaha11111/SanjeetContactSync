@@ -1,12 +1,17 @@
 package com.example.contactsync_sanjeet.ui
 
+import android.icu.lang.UCharacter.DecompositionType.CIRCLE
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.example.contactsync_sanjeet.data.UserContact
 import com.example.contactsync_sanjeet.databinding.UserContactsItemBinding
+import com.example.contactsync_sanjeet.utils.AvatarGenerator
 
 class ContactsListAdapter(
     private val onItemClick: (UserContact) -> Unit,
@@ -27,10 +32,27 @@ class ContactsListAdapter(
         RecyclerView.ViewHolder(binding.root) {
         fun bind(contact: UserContact) {
             binding.apply {
-                name.text = contact.firstName
+                if (contact.displayName.isNotEmpty()) {
+
+                    name.text = contact.displayName
+
+                    Glide.with(binding.userImage.context).load("image_url")
+                        .diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(
+                            AvatarGenerator.avatarImage(
+                                binding.userImage.context,
+                                200,
+                                CIRCLE,
+                                getFirstAlphabeticCharacter(contact.displayName)
+                            )
+                        ).apply(RequestOptions.circleCropTransform()).into(binding.userImage)
+                }
                 root.setOnClickListener { onItemClick(contact) }
             }
         }
+    }
+
+    private fun getFirstAlphabeticCharacter(name: String?): String {
+        return name?.firstOrNull { it.isLetter() }?.toString() ?: "#"
     }
 
     class DiffCallback : DiffUtil.ItemCallback<UserContact>() {

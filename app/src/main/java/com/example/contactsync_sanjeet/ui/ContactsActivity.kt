@@ -11,7 +11,7 @@ import com.example.contactsync_sanjeet.utils.PermissionHelper
 class ContactsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityContactsBinding
-    val viewModel by lazy { ContactsViewModel() }
+    val viewModel by lazy { ContactsViewModel(this) }
 
     private val permLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()

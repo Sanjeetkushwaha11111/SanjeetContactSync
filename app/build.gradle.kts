@@ -62,6 +62,7 @@ dependencies {
     implementation ("com.intuit.sdp:sdp-android:1.1.1")
     implementation ("com.airbnb.android:lottie:6.6.6")
     implementation ("com.jakewharton.timber:timber:5.0.1")
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
 
     implementation(libs.androidx.constraintlayout)
     testImplementation(libs.junit)
