@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,8 +27,8 @@ class ContactsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
 
-    private val _contacts = MutableStateFlow<Result<ContactResponse>?>(null)
-    val contacts: StateFlow<Result<ContactResponse>?> = _contacts
+    private val _contacts = MutableStateFlow<Result<ContactResponse>>(Result.failure(Exception("Initial empty state")))
+    val contacts: StateFlow<Result<ContactResponse>> = _contacts
 
     fun onPermissionsGranted() {
         hasPermissions.postValue(true)
@@ -105,6 +106,7 @@ class ContactsViewModel @Inject constructor(
 
     fun loadContacts() {
         viewModelScope.launch(Dispatchers.IO) {
+            Timber.e(">>>>>>>>>>>>>>>>2")
             _contacts.value = getContactsUseCase()
         }
     }

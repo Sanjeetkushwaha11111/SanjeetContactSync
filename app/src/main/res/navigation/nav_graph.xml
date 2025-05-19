@@ -9,6 +9,9 @@
         android:name="com.example.contactsync_sanjeet.ui.UserContactsFragment"
         android:label="Contacts" >
 
+        <action
+            android:id="@+id/action_userContactsFragment_to_addContactFragmentFromServer"
+            app:destination="@id/addContactFragmentFromServer" />
     </fragment>
 
     <fragment

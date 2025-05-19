@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.contactsync_sanjeet.R
 import com.example.contactsync_sanjeet.data.ContactsViewModel
@@ -22,9 +23,7 @@ class UserContactsFragment : Fragment(R.layout.fragment_user_contacts) {
 
     private var _binding: FragmentUserContactsBinding? = null
     private val binding get() = _binding!!
-    val viewModel: ContactsViewModel by viewModels()
-
-
+    val viewModel: ContactsViewModel by activityViewModels()
 
     private val adapter = ContactsListAdapter { }
 
@@ -39,24 +38,10 @@ class UserContactsFragment : Fragment(R.layout.fragment_user_contacts) {
             )
         }
 
-        binding.searchBar.setOnClickListener {
-            viewModel.loadContacts()
-        }
-
-        lifecycleScope.launchWhenStarted {
-            viewModel.contacts.collect { result ->
-                when {
-                    result == null -> Unit
-                    result.isSuccess -> {
-                        val data = result.getOrNull()
-                        Timber.e(">>>>>>>>>>>>>>>>Contacts: $data")
-                    }
-                    result.isFailure -> {
-                        val error = result.exceptionOrNull()
-                        // Show error
-                    }
-                }
-            }
+        binding.syncContactBtn.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_userContactsFragment_to_addContactFragmentFromServer
+            )
         }
 
         viewModel.hasPermissions.observe(viewLifecycleOwner) { updateUi(it) }
