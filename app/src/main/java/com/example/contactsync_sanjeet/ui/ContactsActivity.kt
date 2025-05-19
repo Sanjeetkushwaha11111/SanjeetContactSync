@@ -3,6 +3,7 @@ package com.example.contactsync_sanjeet.ui
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.contactsync_sanjeet.data.ContactsViewModel
 import com.example.contactsync_sanjeet.databinding.ActivityContactsBinding
@@ -11,7 +12,8 @@ import com.example.contactsync_sanjeet.utils.PermissionHelper
 class ContactsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityContactsBinding
-    val viewModel by lazy { ContactsViewModel(this) }
+    val viewModel: ContactsViewModel by viewModels()
+
 
     private val permLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()

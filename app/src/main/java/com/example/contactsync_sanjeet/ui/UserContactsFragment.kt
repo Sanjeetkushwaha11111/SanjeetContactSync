@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.contactsync_sanjeet.R
+import com.example.contactsync_sanjeet.data.ContactsViewModel
 import com.example.contactsync_sanjeet.databinding.FragmentUserContactsBinding
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -15,7 +17,8 @@ class UserContactsFragment : Fragment(R.layout.fragment_user_contacts) {
 
     private var _binding: FragmentUserContactsBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by lazy { (requireActivity() as ContactsActivity).viewModel }
+    val viewModel: ContactsViewModel by activityViewModels()
+
 
     private val adapter = ContactsListAdapter { }
 
@@ -28,6 +31,26 @@ class UserContactsFragment : Fragment(R.layout.fragment_user_contacts) {
             addItemDecoration(
                 DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL)
             )
+        }
+
+        binding.searchBar.setOnClickListener {
+            viewModel.loadContacts()
+        }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.contacts.collect { result ->
+                when {
+                    result == null -> Unit
+                    result.isSuccess -> {
+                        val data = result.getOrNull()
+                        Timber.e(">>>>>>>>>>>>>>>>Contacts: $data")
+                    }
+                    result.isFailure -> {
+                        val error = result.exceptionOrNull()
+                        // Show error
+                    }
+                }
+            }
         }
 
         viewModel.hasPermissions.observe(viewLifecycleOwner) { updateUi(it) }

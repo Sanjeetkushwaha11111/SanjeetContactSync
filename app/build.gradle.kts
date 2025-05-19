@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    id("dagger.hilt.android.plugin")
-    id("kotlin-android")
+    alias(libs.plugins.dagger.hilt) // ✅ Correct alias from TOML
     id("kotlin-kapt")
+
 }
 
 android {
@@ -76,7 +76,7 @@ dependencies {
 
     implementation( "com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-compiler:2.51.1")
-
+    implementation ("com.squareup.retrofit2:converter-gson:2.1.0")
     // OkHttp logging (optional but useful)
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 

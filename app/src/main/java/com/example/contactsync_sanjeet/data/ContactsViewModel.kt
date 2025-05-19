@@ -6,19 +6,28 @@ import android.provider.ContactsContract
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class ContactsViewModel(private val appContext: Context) : ViewModel() {
-
+@HiltViewModel
+class ContactsViewModel @Inject constructor(
+    private val getContactsUseCase: GetContactsUseCase,
+    @ApplicationContext private val appContext: Context
+) : ViewModel() {
     val hasPermissions = MutableLiveData(false)
 
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState
+
+    private val _contacts = MutableStateFlow<Result<ContactResponse>?>(null)
+    val contacts: StateFlow<Result<ContactResponse>?> = _contacts
 
     fun onPermissionsGranted() {
         hasPermissions.postValue(true)
@@ -91,6 +100,12 @@ class ContactsViewModel(private val appContext: Context) : ViewModel() {
 
             parts.size == 1 -> parts[0].firstOrNull()?.uppercaseChar()?.toString() ?: ""
             else -> ""
+        }
+    }
+
+    fun loadContacts() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _contacts.value = getContactsUseCase()
         }
     }
 
