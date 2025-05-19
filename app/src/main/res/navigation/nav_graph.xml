@@ -7,7 +7,9 @@
     <fragment
         android:id="@+id/userContactsFragment"
         android:name="com.example.contactsync_sanjeet.ui.UserContactsFragment"
-        android:label="Contacts" />
+        android:label="Contacts" >
+
+    </fragment>
 
     <fragment
         android:id="@+id/addContactFragmentFromServer"
