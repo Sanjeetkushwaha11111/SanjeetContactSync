@@ -8,10 +8,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.contactsync_sanjeet.data.ContactsViewModel
 import com.example.contactsync_sanjeet.databinding.ActivityContactsBinding
 import com.example.contactsync_sanjeet.utils.PermissionHelper
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ContactsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityContactsBinding
+
     val viewModel: ContactsViewModel by viewModels()
 
 

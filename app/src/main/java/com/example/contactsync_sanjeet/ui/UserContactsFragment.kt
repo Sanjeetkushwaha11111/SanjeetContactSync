@@ -2,22 +2,28 @@ package com.example.contactsync_sanjeet.ui
 
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.contactsync_sanjeet.R
 import com.example.contactsync_sanjeet.data.ContactsViewModel
 import com.example.contactsync_sanjeet.databinding.FragmentUserContactsBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.getValue
 
+@AndroidEntryPoint
 class UserContactsFragment : Fragment(R.layout.fragment_user_contacts) {
 
     private var _binding: FragmentUserContactsBinding? = null
     private val binding get() = _binding!!
-    val viewModel: ContactsViewModel by activityViewModels()
+    val viewModel: ContactsViewModel by viewModels()
+
 
 
     private val adapter = ContactsListAdapter { }
